@@ -1,0 +1,15 @@
+{
+    "name": "API com serviços novos de validador de pdf",
+
+    "dockerComposeFile": "docker-compose.yml",
+    "remoteUser": "default",
+    "service": "app",
+    "workspaceFolder": "/opt/app-root/src",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python"
+            ]
+        }
+    }
+}

@@ -1,0 +1,11 @@
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    command: sleep infinity
+    env_file:
+      - .env.dev
+    user: default
+    volumes:
+      - ../:/opt/app-root/src
