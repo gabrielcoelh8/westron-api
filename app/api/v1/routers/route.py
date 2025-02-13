@@ -2,14 +2,14 @@ from fastapi import APIRouter
 from typing import List, Optional
 
 from app.models import ExtratoBancarioModel
-from app.database.impl.repository_extrato_bancario import ExtratoBancarioRepository
+from app.database.repository.repository import Repository
 from app.schemas.extrato_bancario_request import InsertRequest, \
     GetByInstituicaoIdRequest, ExistsExtratoRequest, GetByTipoRequest
 from app.schemas.requests import InsertResponse
 
 
 router = APIRouter()
-extrato_bancario_repositorio = ExtratoBancarioRepository()
+extrato_bancario_repositorio = Repository()
 
 
 @router.post(
