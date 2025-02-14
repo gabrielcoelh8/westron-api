@@ -2,7 +2,7 @@ from typing import Optional
 
 from fastapi import APIRouter
 
-from app.database.repository.repository import Repository
+from app.database.repository.user_repository import Repository
 from app.schemas.user_request import CreateRequest, UpdateRequest
 from app.schemas.user_response import CreateResponse, ReadMeResponse, UpdateResponse
 
