@@ -3,7 +3,7 @@ from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy.schema import CreateSchema
 
 from app.database.meta.database_connection import DatabaseConnection
-from app.database.impl.postgres_config import PostgresConfig
+from app.database.service.postgres_config import PostgresConfig
 from app.database.meta.schema import schema
 
 
