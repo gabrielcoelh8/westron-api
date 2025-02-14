@@ -1,38 +1,38 @@
-from sqlalchemy import ForeignKey, UniqueConstraint
-from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
+import uuid
+from sqlalchemy import String, UniqueConstraint
+from sqlalchemy.orm import Mapped, mapped_column, validates
+from sqlalchemy.dialects.postgresql import UUID
 
-from app.database.meta.declarative_base import postgres_base
+from app.database.meta.declarative import Base
 from app.database.meta.schema import schema
 
 
-class ExtratoBancario(postgres_base):
-    __tablename__ = 'extrato_bancario'
+class User(Base):
+    __tablename__ = 'user'
     __table_args__ = (
-        UniqueConstraint('tipo', 'instituicao_financeira_id', name='uq_tipo_instituicao_financeira_id'),
+        UniqueConstraint('username', name='uq_user_username'),
+        UniqueConstraint('email', name='uq_user_email'),
         {'schema': schema}
     )
 
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    tipo: Mapped[str] = mapped_column(nullable=False)
-    instituicao_financeira_id: Mapped[int] = mapped_column(
-        ForeignKey(f'{schema}.instituicao_financeira.id'), nullable=False
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), 
+        primary_key=True, 
+        default=uuid.uuid4
     )
-
-    instituicao_financeira: Mapped['InstituicaoFinanceira'] = relationship(
-        'InstituicaoFinanceira',
-        back_populates='extratos_bancarios'
-    )
-    aliases_extrato_bancario: Mapped[list['ExtratoBancarioAlias']] = relationship(
-        'ExtratoBancarioAlias',
-        back_populates='extrato_bancario'
-    )
-    prompts_extrato_bancario: Mapped[list['PromptExtratoBancario']] = relationship(
-        'PromptExtratoBancario',
-        back_populates='extrato_bancario'
-    )
-
-    @validates('tipo')
-    def validate_tipo(self, key, value):
-        if not value or value.strip() == '':
-            raise ValueError('O campo \'tipo\' não pode ser uma string vazia.')
-        return value
+    username: Mapped[str] = mapped_column(nullable=False, unique=True)
+    email: Mapped[str] = mapped_column(nullable=False, unique=True)
+    full_name: Mapped[str] = mapped_column(String(100), nullable=False)
+    disabled: Mapped[bool] = mapped_column(nullable=False, default=False)
+    
+    @validates('email')
+    def validate_email(self, key, value):
+        if not '@' in value:
+            raise ValueError("Email inválido")
+        return value.lower()
+    
+    @validates('username')
+    def validate_username(self, key, value):
+        if len(value) < 3:
+            raise ValueError("Username deve ter pelo menos 3 caracteres")
+        return value.lower()
