@@ -1,4 +1,4 @@
 from os import environ
 
 
-schema = environ.get('FUNDACOES_DB_SCHEMA_VALIDADOR')
+schema = environ.get('POSTGRES_DB_SCHEMA')
