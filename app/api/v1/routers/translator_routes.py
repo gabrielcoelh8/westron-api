@@ -7,6 +7,7 @@ from app.schemas.translator_response import TranslateFileResponse, TranslateText
 
 router = APIRouter()
 
+
 @router.post(
     path='/translator/translate_text',
     response_model=Optional[TranslateTextResponse]

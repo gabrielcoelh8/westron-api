@@ -1,16 +1,17 @@
 from io import BytesIO
 from json import dumps
 from os import environ
+from typing import Any
 
 from PIL import Image
 import base64
 
-from app.schemas.requests_ocr import ObjetoOCRRequest
+# from app.schemas.requests_ocr import ObjetoOCRRequest
 from azure.core.credentials import AzureKeyCredential
 from azure.ai.formrecognizer import DocumentAnalysisClient
 
 
-def obter_objeto_de_ocr_request(request: ObjetoOCRRequest) -> dict[str, str]:
+def obter_objeto_de_ocr_request(request: Any) -> dict[str, str]:
     endpoint = environ.get('ENDPOINT')
     key = environ.get('KEY')
     imagem = request.imagem_base64

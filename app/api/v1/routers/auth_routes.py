@@ -6,12 +6,12 @@ from app.schemas.auth_request import LoginRequest
 from app.schemas.auth_response import CurrentActiveResponse, LoginResponse, LogoffResponse
 
 
-# https://fastapi.tiangolo.com/tutorial/security/simple-oauth2/#use-the-form-data
-router = APIRouter()
+router = APIRouter() # https://fastapi.tiangolo.com/tutorial/security/simple-oauth2/#use-the-form-data
+
 
 @router.post(
     path='/auth/login',
-    response_model=Optional[LoginResponse]
+    response_model=Optional[LoginResponse],
 )
 def login(request: LoginRequest):
     return LoginResponse(
