@@ -3,7 +3,7 @@ from typing import Optional
 
 from app.schemas.positivity_response import IsPositiveResponse, ToPositiveResponse
 from app.schemas.positivity_request import IsPositiveRequest, ToPositiveRequest
-
+from app.api.v1.modules.positivity import is_positive_text_process, to_positive_text_process
 
 router = APIRouter()
 
@@ -13,9 +13,7 @@ router = APIRouter()
     response_model=Optional[IsPositiveResponse]
 )
 def is_positive(request: IsPositiveRequest):
-    return IsPositiveResponse(
-        is_positive=True
-    )
+    return is_positive_text_process(request)
 
 
 @router.post(
@@ -23,7 +21,5 @@ def is_positive(request: IsPositiveRequest):
     response_model=Optional[ToPositiveResponse]
 )
 def to_positive(request: ToPositiveRequest):
-    return ToPositiveResponse(
-        text=""
-    )
+    return to_positive_text_process(request)
 

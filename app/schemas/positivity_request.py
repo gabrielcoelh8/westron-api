@@ -2,7 +2,7 @@ from pydantic import BaseModel
 
 
 class IsPositiveRequest(BaseModel):
-    is_positive: bool
+    text: str
 
 
 class ToPositiveRequest(BaseModel):

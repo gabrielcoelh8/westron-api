@@ -1,0 +1,5 @@
+{
+    "is_positive": "Analyze whether the following text is positive or not.",
+    "to_positive": "Make the following text positive, keeping it as similar as possible",
+    "translate": "Translate the follow text from {} to {}."
+}

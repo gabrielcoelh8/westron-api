@@ -6,8 +6,8 @@ from app.database.models.user_model import User
 from app.schemas.database_response import InsertResponse
 
 
-class ExtratoBancarioRepository(SqlAlchemyDatabaseService):
-    def add_extrato_bancario(self, data: Dict) -> InsertResponse:
+class UserRepository(SqlAlchemyDatabaseService):
+    def add_user(self, data: Dict) -> InsertResponse:
         try:
             insert_response = self.add(User, data)
         except ValueError as e:

@@ -5,9 +5,9 @@ from typing import Any
 from openai import AzureOpenAI
 from openai.types.chat.chat_completion import ChatCompletion
 
-from app.services.chat_gpt.endpoint import Endpoint
-from app.services.chat_gpt.model import Model
-from app.services.chat_gpt.utils import count_tokens
+from app.services.openai.endpoint import Endpoint
+from app.services.openai.model import Model
+from app.services.openai.utils import count_tokens
 
 
 def create_models() -> list[Model]:
