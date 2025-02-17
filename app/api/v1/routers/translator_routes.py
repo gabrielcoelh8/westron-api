@@ -17,12 +17,12 @@ def translate_text(request: TranslateTextRequest):
     return translate_process(request)
 
 
-@router.post(
-    path='/translator/translate_file',
-    response_model=Optional[TranslateFileResponse]
-)
-def translate_file(request: TranslateFileRequest):
-    return TranslateFileResponse(
-        file="Coming soon..."
-    )
+# @router.post(
+#     path='/translator/translate_file',
+#     response_model=Optional[TranslateFileResponse]
+# )
+# def translate_file(request: TranslateFileRequest):
+#     return TranslateFileResponse(
+#         file="Coming soon..."
+#     )
 
