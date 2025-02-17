@@ -14,27 +14,6 @@ WORKDIR /opt/app-root/src
 
 ENV TZ=America/Campo_Grande
 
-# Instala o certifi
-RUN pip install certifi
-
-# Esta configuração é necessária apenas usando DevContainer e não deve ser utilizada em produção
-RUN curl -k -SL https://satellite.mpms.mp.br/pub/FAC.crt -o /etc/pki/ca-trust/source/anchors/FAC.crt && \
-    chmod -R 755 /etc/pki/ca-trust/source/anchors/ && \
-    chmod -R 755 /etc/pki/ca-trust/extracted/openssl/ && \
-    update-ca-trust
-
-# Anexa o certificado ao certifi para que o Python o reconheça
-RUN CERTIFI_CA=$(python -m certifi) && \
-    cat /etc/pki/ca-trust/source/anchors/FAC.crt >> $CERTIFI_CA
-
-# Configurações do Oracle
-RUN yum update -y && \
-    yum install -y libaio unzip && \
-    mkdir -p /opt/oracle && \
-    wget https://download.oracle.com/otn_software/linux/instantclient/2113000/instantclient-basic-linux.x64-21.13.0.0.0dbru.zip && \
-    unzip -q instantclient-basic-linux.x64-21.13.0.0.0dbru.zip -d /opt/oracle && \
-    rm instantclient-basic-linux.x64-21.13.0.0.0dbru.zip
-
 COPY .devcontainer/requirements.txt /tmp/pip-tmp/
 
 RUN pip install --upgrade pip && \ 

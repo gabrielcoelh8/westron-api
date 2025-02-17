@@ -1,0 +1,27 @@
+services:
+    banco-dados:
+        container_name: banco-dados
+        image:
+            postgres
+        env_file:
+            - .env
+        expose:
+            - $POSTGRES_DB_PORT
+        ports:
+            - "5434:5432"
+        restart: always
+        volumes:
+            - ./banco-dados:/db/postgres
+    servico-api:
+        container_name: servico-api
+        build:
+            context: .
+            dockerfile: Dockerfile
+        restart: always
+        ports:
+            - "8001:8001"
+        stop_signal: SIGINT
+        env_file:
+            - .env
+volumes:
+    banco-dados:
