@@ -2,7 +2,7 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-from app.models.user_model import UserModel
+from app.models.user import User
 
 
 class CreateResponse(BaseModel):

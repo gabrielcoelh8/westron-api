@@ -2,11 +2,11 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-from app.models.user_model import UserModel
+from app.models.user import UserInDB
 
 
 class CreateRequest(BaseModel):
-    user: UserModel
+    user: UserInDB
 
 
 class UpdateRequest(BaseModel):

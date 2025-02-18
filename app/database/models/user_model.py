@@ -23,6 +23,7 @@ class User(Base):
     username: Mapped[str] = mapped_column(nullable=False, unique=True)
     email: Mapped[str] = mapped_column(nullable=False, unique=True)
     full_name: Mapped[str] = mapped_column(String(100), nullable=False)
+    hashed_password: Mapped[str] = mapped_column(String(100), nullable=False)
     disabled: Mapped[bool] = mapped_column(nullable=False, default=False)
     
     @validates('email')
