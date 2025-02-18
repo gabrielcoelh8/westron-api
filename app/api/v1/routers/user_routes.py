@@ -1,11 +1,12 @@
 from typing import Optional
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
 # from app.database.repository.user_repository import Repository
 from app.schemas.user_request import CreateRequest, UpdateRequest
 from app.schemas.user_response import CreateResponse, ReadMeResponse, UpdateResponse
-
+from app.models.user import User
+from app.api.v1.routers.auth_routes import get_current_active_user
 
 router = APIRouter()
 
@@ -25,22 +26,18 @@ def create(request: CreateRequest):
 
 
 @router.post(
-    path='/user/read_me',
-    response_model=Optional[ReadMeResponse]
+    path='/user/read_me'
 )
-def read_me():
-    return ReadMeResponse(
-        token="",
-        user_id=""
-    )
+async def read_users_me(current_user: User = Depends(get_current_active_user)):
+    return current_user
 
 
-@router.post(
-    path='/user/update',
-    response_model=Optional[UpdateResponse]
-)
-def update(request: UpdateRequest):
-    return UpdateResponse(
-        sucess=True,
-        user_id=""
-    )
+# @router.post(
+#     path='/user/update',
+#     response_model=Optional[UpdateResponse]
+# )
+# def update(request: UpdateRequest):
+#     return UpdateResponse(
+#         sucess=True,
+#         user_id=""
+#     )
