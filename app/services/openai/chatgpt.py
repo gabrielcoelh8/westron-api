@@ -2,7 +2,7 @@ from os import environ
 from time import time
 from typing import Any
 
-from openai import AzureOpenAI
+from openai import NOT_GIVEN, AzureOpenAI, OpenAI  # Added OpenAI import
 from openai.types.chat.chat_completion import ChatCompletion
 
 from app.services.openai.endpoint import Endpoint
@@ -29,7 +29,7 @@ def create_models() -> list[Model]:
 class ChatGPT:
     _models = create_models()
 
-    def __init__(self, prompt: str, text: str, response_format: Any = None):
+    def __init__(self, prompt: str, text: str, response_format: Any = NOT_GIVEN):
         self._response_format = response_format
         self._prompt = prompt
         self._text = text
@@ -44,65 +44,65 @@ class ChatGPT:
         self._completion = self._create_completion()
         self._reset_model_ignore()
 
-    def _create_client(self) -> AzureOpenAI:
-        api_version = environ.get('AZURE_OPENAI_API_VERSION')
-        client = AzureOpenAI(
-            azure_endpoint=self._model.endpoint.url,
-            api_key=self._model.endpoint.key,
-            api_version=api_version
-        )
-        return client
+    def _create_client(self) -> AzureOpenAI | OpenAI:
+        if 'openai.azure.com' in self._model.endpoint.url: # for future azure impl.
+            api_version = environ.get('AZURE_OPENAI_API_VERSION')
+            return AzureOpenAI(
+                azure_endpoint=self._model.endpoint.url,
+                api_key=self._model.endpoint.key,
+                api_version=api_version
+            )
+        else:
+            return OpenAI(
+                base_url=self._model.endpoint.url,
+                api_key=self._model.endpoint.key,
+            )
 
     def _create_completion(self) -> ChatCompletion:
         max_tokens = (
             self._model.output_size - self._estimated_output_size - self._input_size
             if self._model.input_size == self._model.output_size else self._model.output_size
         )
-
+        
         self._start = time()
-        if self._response_format:
-            completion = self._client.beta.chat.completions.parse(
-                model=self._model.name,
-                messages=self._messages,
-                temperature=0,
-                max_tokens=max_tokens,
-                top_p=0,
-                frequency_penalty=0,
-                presence_penalty=0,
-                stop=None,
-                seed=0,
-                response_format=self._response_format,  # Passa o modelo Pydantic para obter saída estruturada
-            )
-        else:
-            completion = self._client.chat.completions.create(
-                model=self._model.name,
-                messages=self._messages,
-                temperature=0,
-                max_tokens=max_tokens,
-                top_p=0,
-                frequency_penalty=0,
-                presence_penalty=0,
-                stop=None,
-                seed=0,
-            )
+        
+        try:
+            completion_params = {
+                "model": self._model.name,
+                "messages": self._messages,
+                "temperature": 0,
+                "max_tokens": max_tokens,
+                "top_p": 0,
+                "frequency_penalty": 0,
+                "presence_penalty": 0,
+                "stop": None,
+                "seed": 0,
+                "response_format": self._response_format
+            }
+            completion = self._client.beta.chat.completions.parse(**completion_params)
 
-        self._end = time()
-        self._set_time_to_completion()
+            self._end = time() 
+            self._set_time_to_completion()
 
-        if completion.choices[0].finish_reason == 'length':  # TODO: adicionar time_out aqui também
-            self._model.ignore = True
-            self._model = self._select_model()
-            completion = self._create_completion()
+            if completion.choices[0].finish_reason == 'length':
+                self._model.ignore = True
+                self._model = self._select_model()
+                completion = self._create_completion()
 
-        return completion
+            return completion
+
+        except Exception as e:
+            error_msg = f"Error creating completion with model {self._model.name}: {str(e)}"
+            raise RuntimeError(error_msg) from e
 
     def _create_messages(self) -> list[dict]:
         messages = [
             {'role': 'system', 'content': self._prompt},
-            {'role': 'user', 'content': [{'type': 'text', 'text': self._text}]}
+            {'role': 'user', 'content': self._text}  # Simplified message format
         ]
         return messages
 
+    # Rest of the class implementation remains the same
     def _get_estimated_output_size(self) -> int:
         estimated_output_size = self._input_size * 0.25
         return round(estimated_output_size)
@@ -118,26 +118,17 @@ class ChatGPT:
             model.ignore = False
 
     def _select_model(self) -> Model:
-        # lista modelos a serem ignorados
         models_to_ignore = [model for model in self._models if model.ignore]
-
-        # lista tamanhos de entradas e saídas a serem ignoradas
         inputs_to_ignore = [model.input_size for model in models_to_ignore if model.ignore]
         outputs_to_ignore = [model.output_size for model in models_to_ignore if model.ignore]
-
-        # lista modelos cujo atributo ignore possui valor falso
+        
         models = [model for model in self._models if not model.ignore]
-
-        # lista modelos cujos tamanhos de entrada e saída não estão nas listas de tamanhos a serem ignorados
         models = [
             model for model in models
             if model.input_size not in inputs_to_ignore and model.output_size not in outputs_to_ignore
         ]
-
-        # lista os modelos que provavelmente suportam a entrada
+        
         models = [model for model in models if model.input_size >= self._input_size]
-
-        # lista os modelos que provavelmente suportam a saida
         models = [
             model for model in models if any([
                 model.input_size != model.output_size and model.output_size >= self._estimated_output_size,
@@ -146,10 +137,11 @@ class ChatGPT:
                 )
             ])
         ]
-
-        # ordena os modelos por tamanho de entrada, tamanho de saida e tempo de resposta
+        
+        if not models:
+            raise ValueError("No suitable model found for the given input and output requirements")
+            
         models.sort(key=lambda model: (model.input_size, model.output_size, model.time))
-
         return models[0]
 
     def _set_time_to_completion(self) -> None:
