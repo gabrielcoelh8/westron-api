@@ -4,6 +4,7 @@ from app.database.service.sqlalchemy_service import SqlAlchemyDatabaseService
 
 from app.database.models.user_model import User
 from app.schemas.database_response import InsertResponse
+from app.schemas.user_request import CreateRequest
 
 
 class UserRepository(SqlAlchemyDatabaseService):

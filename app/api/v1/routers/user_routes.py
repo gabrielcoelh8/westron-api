@@ -2,7 +2,7 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends
 
-# from app.database.repository.user_repository import Repository
+from app.database.repository.user_repository import UserRepository
 from app.schemas.user_request import CreateRequest, UpdateRequest
 from app.schemas.user_response import CreateResponse, ReadMeResponse, UpdateResponse
 from app.models.user import User
@@ -11,7 +11,7 @@ from app.api.v1.routers.auth_routes import get_current_active_user
 router = APIRouter()
 
 
-# user_repository = Repository()
+user_repository = UserRepository()
 
 
 @router.post(
@@ -19,10 +19,7 @@ router = APIRouter()
     response_model=Optional[CreateResponse]
 )
 def create(request: CreateRequest):
-    return CreateResponse(
-        sucess=True,
-        user_id=""
-    )
+    return user_repository.add_user(request.user.model_dump())
 
 
 @router.post(
