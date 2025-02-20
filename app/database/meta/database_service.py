@@ -28,7 +28,3 @@ class DatabaseService(ABC, Generic[T]):
     @abstractmethod
     def delete(self, entity: T, entity_id: int) -> bool:
         pass
-
-    @abstractmethod
-    def join(self, entities: List[T], filters) -> List[T]:
-        pass
