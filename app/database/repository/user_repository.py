@@ -1,10 +1,10 @@
-from typing import Dict
+from typing import Dict, Optional
 
 from app.database.service.sqlalchemy_service import SqlAlchemyDatabaseService
 
 from app.database.models.user_model import User
 from app.schemas.database_response import InsertResponse
-from app.schemas.user_request import CreateRequest
+from app.models.token import TokenData
 
 
 class UserRepository(SqlAlchemyDatabaseService):
@@ -28,3 +28,6 @@ class UserRepository(SqlAlchemyDatabaseService):
                 status_code=400
             )
         return insert_response
+    
+    def get_user(self, data: TokenData) -> Optional[User]:
+        return self.get_one_by(User, data.model_dump())

@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from typing import Optional
 
 from pydantic import BaseModel
@@ -5,7 +7,7 @@ from pydantic import BaseModel
 class InsertResponse(BaseModel):
     success: bool
     message: str
-    id: Optional[int]
+    id: UUID
     status_code: int
 
     class Config:

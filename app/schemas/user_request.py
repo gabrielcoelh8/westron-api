@@ -15,3 +15,7 @@ class UpdateRequest(BaseModel):
     email: Optional[str]
     hashed_password: Optional[str]
     disabled: Optional[bool]
+
+
+class GetUserRequest(BaseModel):
+    username: Optional[str]

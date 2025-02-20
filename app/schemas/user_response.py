@@ -1,20 +1,20 @@
 from typing import Optional
 
-from pydantic import BaseModel
+from uuid import UUID
 
-from app.models.user import User
+from pydantic import BaseModel
 
 
 class CreateResponse(BaseModel):
-    sucess: bool
-    user_id: str
+    success: bool
+    user_id: UUID
 
 
 class ReadMeResponse(BaseModel):
-    user_id: str
-    token: str # ?
+    user_id: UUID
+    token: Optional[str] = None  # Deixa o token opcional
 
 
 class UpdateResponse(BaseModel):
-    sucess: bool
-    user_id: str
+    success: bool
+    user_id: UUID

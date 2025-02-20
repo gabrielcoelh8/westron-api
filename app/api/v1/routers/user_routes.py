@@ -3,10 +3,10 @@ from typing import Optional
 from fastapi import APIRouter, Depends
 
 from app.database.repository.user_repository import UserRepository
-from app.schemas.user_request import CreateRequest, UpdateRequest
-from app.schemas.user_response import CreateResponse, ReadMeResponse, UpdateResponse
+from app.schemas.user_request import CreateRequest
+from app.schemas.database_response import InsertResponse
 from app.models.user import User
-from app.api.v1.routers.auth_routes import get_current_active_user
+from app.api.v1.modules.auth import get_current_active_user, hash_password
 
 router = APIRouter()
 
@@ -16,10 +16,12 @@ user_repository = UserRepository()
 
 @router.post(
     path='/user/create',
-    response_model=Optional[CreateResponse]
+    response_model=Optional[InsertResponse]
 )
-def create(request: CreateRequest):
-    return user_repository.add_user(request.user.model_dump())
+async def create(request: CreateRequest):
+    data = request.user.model_dump()
+    data["hashed_password"] = hash_password(data["hashed_password"])
+    return user_repository.add_user(data)
 
 
 @router.post(

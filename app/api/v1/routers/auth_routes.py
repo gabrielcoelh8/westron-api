@@ -1,98 +1,18 @@
-from datetime import datetime, timedelta, timezone
+from datetime import timedelta
+from os import environ
 from typing import Optional
 
 from fastapi import APIRouter
 from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-import jwt
-from jwt.exceptions import InvalidTokenError
-from passlib.context import CryptContext
+from fastapi.security import OAuth2PasswordRequestForm
 
-from app.models.user import User, UserInDB
-from app.models.token import Token, TokenData
-from app.schemas.auth_request import LoginRequest
-from app.schemas.auth_response import CurrentActiveResponse, LoginResponse, LogoffResponse
+from app.models.token import Token
+from app.api.v1.modules.auth import authenticate_user, create_access_token, logout_user, oauth2_scheme
+from app.schemas.auth_response import LogoffResponse
 
-# https://fastapi.tiangolo.com/tutorial/security/simple-oauth2/#use-the-form-data
-# openssl rand -hex 32
-SECRET_KEY = "7f2f17134e53030a0a2c7e241e32c804d259b5844278613e7fab48ea9f42cbce"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 10
-# test
-fake_users_db = {
-    "johndoe": {
-        "username": "johndoe",
-        "full_name": "John Doe",
-        "email": "johndoe@example.com",
-        "hashed_password": "$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW",
-        "disabled": False,
-    }
-}
+ACCESS_TOKEN_EXPIRE_MINUTES = int(environ.get('ACCESS_TOKEN_EXPIRE_MINUTES'))
 
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1.0/token")
 router = APIRouter()
-
-
-def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
-
-
-def get_password_hash(password):
-    return pwd_context.hash(password)
-
-
-def get_user(db, username: str):
-    if username in db:
-        user_dict = db[username]
-        return UserInDB(**user_dict)
-
-
-def authenticate_user(fake_db, username: str, password: str):
-    user = get_user(fake_db, username)
-    if not user:
-        return False
-    if not verify_password(password, user.hashed_password):
-        return False
-    return user
-
-
-def create_access_token(data: dict, expires_delta: timedelta | None = None):
-    to_encode = data.copy()
-    if expires_delta:
-        expire = datetime.now(timezone.utc) + expires_delta
-    else:
-        expire = datetime.now(timezone.utc) + timedelta(minutes=15)
-    to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
-
-
-async def get_current_user(token: str = Depends(oauth2_scheme)):
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        if username is None:
-            raise credentials_exception
-        token_data = TokenData(username=username)
-    except InvalidTokenError:
-        raise credentials_exception
-    user = get_user(fake_users_db, username=token_data.username)
-    if user is None:
-        raise credentials_exception
-    return user
-
-
-async def get_current_active_user(current_user: User = Depends(get_current_user)):
-    if current_user.disabled:
-        raise HTTPException(status_code=400, detail="Inactive user")
-    return current_user
 
 
 @router.post(
@@ -101,7 +21,7 @@ async def get_current_active_user(current_user: User = Depends(get_current_user)
 async def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(),
 ) -> Token:
-    user = authenticate_user(fake_users_db, form_data.username, form_data.password)
+    user = authenticate_user(form_data.username, form_data.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -115,11 +35,9 @@ async def login_for_access_token(
     return Token(access_token=access_token, token_type="bearer")
 
 
-# @router.post(
-#     path='/auth/logoff',
-#     response_model=Optional[LogoffResponse]
-# )
-# def logout():
-#     return LogoffResponse(
-#         sucess=True
-#     )
+@router.post(
+    path="/logout",
+    response_model=Optional[LogoffResponse]
+)
+async def logout(token: str = Depends(oauth2_scheme)):  
+    return await logout_user(token)

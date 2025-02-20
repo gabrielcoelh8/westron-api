@@ -5,7 +5,7 @@ class User(BaseModel):
     username: str
     full_name: str
     email: str
-    disabled: bool
+    disabled: bool = False
 
     class Config:
         from_attributes = True

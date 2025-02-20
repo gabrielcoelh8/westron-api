@@ -30,7 +30,7 @@ class SqlAlchemyDatabaseService(DatabaseService):
             self.session.commit()
             return InsertResponse(
                 success=True,
-                message=f"Registro adicionado com sucesso, ID: {record.id}",
+                message=f"Registro adicionado com sucesso.",
                 id=record.id,
                 status_code=201
             )

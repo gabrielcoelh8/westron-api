@@ -4,7 +4,8 @@ from typing import Optional
 from app.schemas.positivity_response import IsPositiveResponse, ToPositiveResponse
 from app.schemas.positivity_request import IsPositiveRequest, ToPositiveRequest
 from app.api.v1.modules.positivity import is_positive_text_process, to_positive_text_process
-from app.api.v1.routers.auth_routes import get_current_active_user
+from app.api.v1.modules.auth import get_current_active_user
+
 
 router = APIRouter()
 
