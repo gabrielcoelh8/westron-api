@@ -29,14 +29,3 @@ async def create(request: CreateRequest):
 )
 async def read_users_me(current_user: User = Depends(get_current_active_user)):
     return current_user
-
-
-# @router.post(
-#     path='/user/update',
-#     response_model=Optional[UpdateResponse]
-# )
-# def update(request: UpdateRequest):
-#     return UpdateResponse(
-#         sucess=True,
-#         user_id=""
-#     )
