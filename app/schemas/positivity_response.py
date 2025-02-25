@@ -1,9 +1,9 @@
-from pydantic import BaseModel
+from app.models.ai_model import AIModel
 
 
-class IsPositiveResponse(BaseModel):
+class IsPositiveResponse(AIModel):
     is_positive: bool
 
 
-class ToPositiveResponse(BaseModel):
+class ToPositiveResponse(AIModel):
     text: str

@@ -1,9 +1,10 @@
 from os import environ
 from time import time
-from typing import Any
+from typing import Any, Type
 
-from openai import NOT_GIVEN, AzureOpenAI, OpenAI  # Added OpenAI import
+from openai import NOT_GIVEN, AzureOpenAI, OpenAI
 from openai.types.chat.chat_completion import ChatCompletion
+from pydantic import BaseModel
 
 from app.services.openai.endpoint import Endpoint
 from app.services.openai.model import Model
@@ -151,9 +152,9 @@ class ChatGPT:
     def get_completion(self) -> ChatCompletion:
         return self._completion
 
-    def get_response(self) -> str:
+    def response(self) -> str:
         return self._completion.choices[0].message.content
 
-    def get_parsed_response(self):
+    def parsed_response(self) -> Type[BaseModel]:
         response_parsed = self._completion.choices[0].message.parsed
         return response_parsed.model_dump()

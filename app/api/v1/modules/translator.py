@@ -1,25 +1,16 @@
-from app.services.openai.chatgpt import ChatGPT
+from app.services.llm import AIProcessor
 from app.utils.functions import obter_prompt
-from app.schemas.response_formats import TranslateResponseFormat
-from app.schemas.translator_response import TranslateFileResponse, TranslateTextResponse
+from app.schemas.translator_response import TranslateTextResponse
 from app.schemas.translator_request import TranslateTextRequest
+from app.schemas.response_formats import TranslateResponseFormat
+
+ai_processor = AIProcessor()
 
 
 def translate_process(req: TranslateTextRequest) -> TranslateTextResponse:
-    text = req.text
+    ai_model = req.ai_model
     in_lang = req.language_in
     out_lang = req.language_out
     prompt = obter_prompt(tipo_de_prompt='translate').format(in_lang, out_lang)
-    chat_gpt = ChatGPT(prompt, text, response_format=TranslateResponseFormat)
-    response = chat_gpt.get_parsed_response()
-    return response
-
-# TODO: PNG/JPG to Text
-# def translate_file_process(req: TranslateTextRequest) -> TranslateFileResponse:
-#     text = req.text
-#     in_lang = req.language_in
-#     out_lang = req.language_out
-#     prompt = obter_prompt(tipo_de_prompt='translate').format(in_lang, out_lang)
-#     chat_gpt = ChatGPT(prompt, text, response_format=TranslateResponseFormat)
-#     response = chat_gpt.get_parsed_response()
-#     return response
+    text = req.text
+    return ai_processor.process(ai_model, prompt, text, TranslateResponseFormat)

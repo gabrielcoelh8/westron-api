@@ -1,9 +1,9 @@
-from pydantic import BaseModel
+from app.models.ai_model import AIModel
 
 
-class IsPositiveRequest(BaseModel):
+class IsPositiveRequest(AIModel):
     text: str
 
 
-class ToPositiveRequest(BaseModel):
+class ToPositiveRequest(AIModel):
     text: str

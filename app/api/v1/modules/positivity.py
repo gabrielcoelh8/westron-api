@@ -1,19 +1,22 @@
-from app.services.openai.chatgpt import ChatGPT
+from app.services.llm import AIProcessor
 from app.utils.functions import obter_prompt
-from app.schemas.response_formats import IsPositiveResponseFormat, ToPositiveResponseFormat
+from app.schemas.positivity_response import IsPositiveResponse, ToPositiveResponse
 from app.schemas.positivity_request import IsPositiveRequest, ToPositiveRequest
+from app.schemas.response_formats import IsPositiveResponseFormat, ToPositiveResponseFormat
 
 
-def is_positive_text_process(req: IsPositiveRequest) -> IsPositiveResponseFormat:
-    text = req.text
+ai_processor = AIProcessor()
+
+
+def is_positive_text_process(req: IsPositiveRequest) -> IsPositiveResponse:
+    ai_model = req.ai_model
     prompt = obter_prompt(tipo_de_prompt='is_positive')
-    chat_gpt = ChatGPT(prompt, text, response_format=IsPositiveResponseFormat)
-    response = chat_gpt.get_parsed_response()
-    return response
-
-def to_positive_text_process(req: ToPositiveRequest) -> ToPositiveResponseFormat:
     text = req.text
+    return ai_processor.process(ai_model, prompt, text, IsPositiveResponseFormat)
+
+
+def to_positive_text_process(req: ToPositiveRequest) -> ToPositiveResponse:
+    ai_model = req.ai_model
     prompt = obter_prompt(tipo_de_prompt='to_positive')
-    chat_gpt = ChatGPT(prompt, text, response_format=ToPositiveResponseFormat)
-    response = chat_gpt.get_parsed_response()
-    return response
+    text = req.text
+    return ai_processor.process(ai_model, prompt, text, ToPositiveResponseFormat)

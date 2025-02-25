@@ -1,9 +1,9 @@
-from pydantic import BaseModel
+from app.models.ai_model import AIModel
 
 
-class TranslateTextResponse(BaseModel):
+class TranslateTextResponse(AIModel):
     text: str
 
 
-class TranslateFileResponse(BaseModel):
+class TranslateFileResponse(AIModel):
     file: str

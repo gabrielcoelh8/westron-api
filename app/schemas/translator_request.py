@@ -1,13 +1,13 @@
-from pydantic import BaseModel
+from app.models.ai_model import AIModel
 
 
-class TranslateTextRequest(BaseModel):
+class TranslateTextRequest(AIModel):
     text: str
     language_in: str
     language_out: str
 
 
-class TranslateFileRequest(BaseModel):
+class TranslateFileRequest(AIModel):
     file: str
     language_in: str
     language_out: str

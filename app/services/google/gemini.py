@@ -50,6 +50,6 @@ class Gemini:
         error_msg = f"Error creating completion with Gemini: {str(e)}"
         raise RuntimeError(error_msg) from e
     
-    def response(self) -> Type[BaseModel]:
+    def parsed_response(self) -> Type[BaseModel]:
         """Retorna o resultado da completion"""
         return self._completion.parsed
