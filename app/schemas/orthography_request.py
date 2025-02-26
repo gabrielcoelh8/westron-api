@@ -2,7 +2,6 @@ from app.models.ai_model import AIModel
 from app.models.language import LanguageEnum
 
 
-class TranslateTextRequest(AIModel):
+class OrthographyCheckRequest(AIModel):
+    language: LanguageEnum
     text: str
-    language_in: LanguageEnum
-    language_out: LanguageEnum

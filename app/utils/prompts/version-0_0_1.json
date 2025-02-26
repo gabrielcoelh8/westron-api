@@ -1,5 +1,6 @@
 {
     "is_positive": "Analyze whether the following text is positive or not.",
-    "to_positive": "Make the following text positive, keeping it as similar as possible",
-    "translate": "Translate the follow text from {} to {}."
+    "to_positive": "Make the following text more positive, keeping it as similar as possible.",
+    "translate": "Translate the follow text from {} to {}.",
+    "orthography": "Correct grammatically and orthographically the following text. (text language: {})"
 }

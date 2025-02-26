@@ -9,8 +9,9 @@ ai_processor = AIProcessor()
 
 def translate_process(req: TranslateTextRequest) -> TranslateTextResponse:
     ai_model = req.ai_model
-    in_lang = req.language_in
-    out_lang = req.language_out
+    in_lang = req.language_in.value
+    out_lang = req.language_out.value
     prompt = obter_prompt(tipo_de_prompt='translate').format(in_lang, out_lang)
     text = req.text
-    return ai_processor.process(ai_model, prompt, text, TranslateResponseFormat)
+    response = ai_processor.process(ai_model, prompt, text, TranslateResponseFormat)
+    return TranslateTextResponse(**response)

@@ -8,3 +8,6 @@ class IsPositiveResponseFormat(BaseModel):
     
 class ToPositiveResponseFormat(BaseModel):
     text: str
+    
+class OrthographyCheckResponseFormat(BaseModel):
+    text: str
