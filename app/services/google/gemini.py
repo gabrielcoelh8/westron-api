@@ -32,7 +32,7 @@ class Gemini:
     
     def _create_completion(self):
       try:
-        response = self._client.models.generate_content(
+        response=self._client.models.generate_content(
           model=environ.get("GEMINI_MODEL"),
           contents=[self._prompt, self._text],
           config={
