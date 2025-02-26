@@ -12,11 +12,13 @@ def is_positive_text_process(req: IsPositiveRequest) -> IsPositiveResponse:
     ai_model = req.ai_model
     prompt = obter_prompt(tipo_de_prompt='is_positive')
     text = req.text
-    return ai_processor.process(ai_model, prompt, text, IsPositiveResponseFormat)
+    response = ai_processor.process(ai_model, prompt, text, IsPositiveResponseFormat)
+    return IsPositiveResponse(**response)
 
 
 def to_positive_text_process(req: ToPositiveRequest) -> ToPositiveResponse:
     ai_model = req.ai_model
     prompt = obter_prompt(tipo_de_prompt='to_positive')
     text = req.text
-    return ai_processor.process(ai_model, prompt, text, ToPositiveResponseFormat)
+    response = ai_processor.process(ai_model, prompt, text, ToPositiveResponseFormat)
+    return ToPositiveResponse(**response)
