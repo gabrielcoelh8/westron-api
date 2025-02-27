@@ -26,4 +26,3 @@ def is_positive(request: IsPositiveRequest):
 )
 def to_positive(request: ToPositiveRequest):
     return to_positive_text_process(request)
-
