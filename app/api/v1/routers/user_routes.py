@@ -24,7 +24,7 @@ async def create(request: CreateRequest):
     return user_repository.add_user(data)
 
 
-@router.post(
+@router.get(
     path='/user/read_me'
 )
 async def read_users_me(current_user: User = Depends(get_current_active_user)):
