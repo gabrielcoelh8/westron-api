@@ -1,5 +1,5 @@
 {
-    "name": "API com serviços novos de validador de pdf",
+    "name": "Westron API",
 
     "dockerComposeFile": "docker-compose.yml",
     "remoteUser": "default",
