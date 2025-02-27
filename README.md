@@ -6,16 +6,22 @@ Enabling the use of various modern LLMs (ChatGPT, Gemini), the API functions as 
 
 > The project architecture allows future addition of new models, or even the use of fine-tuned or proprietary models.
 
--> [Routes Documentation](https://westron-api.onrender.com/docs/): Contains the available routes, inputs, outputs, auth and Pydantic models used.
-
 ![Python](https://img.shields.io/badge/Python-3.12-blue)
 ![fastapi](https://img.shields.io/badge/fastapi-0.115.6-green)
 
-## Supported Languages - translation and orthography check endpoints:
-* "portuguese"
-* "english"
-* "spanish"
-* "french"`
+## Documentation
+Contains the available routes, examples, auth, Pydantic models, and more.
+- [Docs](https://westron-api.onrender.com/docs/)
+
+- [Redoc](https://westron-api.onrender.com/redoc/)
+
+## Supported Languages (ISO 639-1):
+* "en"
+* "es"
+* "fr"
+* "de"
+* "pt"
+* "jp"
 
 ## Configuration and Enviroment
 Requirements:
@@ -56,10 +62,10 @@ TOKEN_URL="api/v1.0/token"
 Execute the following commands to build the project in a Linux terminal or WSL with Docker installed:
 ```shell
 # DATABASE
-docker compose banco-dados up --build
+docker compose up banco-dados --build
 
 # API
-docker compose servico-api up --build
+docker compose up servico-api --build
 ```
 After building, the API service will be available locally at `http://localhost:8001/`
 
