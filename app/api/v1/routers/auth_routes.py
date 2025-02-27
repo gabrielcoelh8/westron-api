@@ -12,11 +12,18 @@ from app.schemas.auth_response import LogoffResponse
 
 ACCESS_TOKEN_EXPIRE_MINUTES = int(environ.get('ACCESS_TOKEN_EXPIRE_MINUTES'))
 
-router = APIRouter()
+router = APIRouter(tags=["Authentication"]) 
 
 
 @router.post(
-    path='/token'
+    path='/token',
+    summary="Get an access token",
+    description="Obtain an access token using username and password.",
+    response_model=Token,
+    responses={
+        401: {"description": "Incorrect username or password", "content": {"application/json": {"example": {"detail": "Incorrect username or password"}}}},
+        200: {"description": "Successful token retrieval", "content": {"application/json": {"example": {"access_token": "your_access_token", "token_type": "bearer"}}}}
+    }
 )
 async def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(),
@@ -37,7 +44,19 @@ async def login_for_access_token(
 
 @router.post(
     path="/logout",
-    response_model=Optional[LogoffResponse]
+    summary="Logout user",
+    description="Invalidates the user's access token.",
+    response_model=Optional[LogoffResponse],
+    responses={
+        200: {"description": "Logout successful", "content": {"application/json": {"example": {"message": "Logout successful"}}}},
+        401: {"description": "Invalid or expired token", "content": {"application/json": {"example": {"detail": "Invalid credentials"}}}},
+        500: {"description": "Internal server error", "content": {"application/json": {"example": {"detail": "Internal server error"}}}}
+    }
 )
-async def logout(token: str = Depends(oauth2_scheme)):  
-    return await logout_user(token)
+async def logout(token: str = Depends(oauth2_scheme)):
+    try:
+        return await logout_user(token)
+    except HTTPException as http_exception:
+        raise http_exception
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error")

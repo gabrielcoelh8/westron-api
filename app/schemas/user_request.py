@@ -1,21 +1,24 @@
-from typing import Optional
-
 from pydantic import BaseModel
 
 from app.models.user import UserInDB
 
 
 class CreateRequest(BaseModel):
-    user: UserInDB
+    """Request to create a new user."""
+    user: UserInDB = ...
 
-
-class UpdateRequest(BaseModel):
-    username: Optional[str]
-    full_name: Optional[str]
-    email: Optional[str]
-    hashed_password: Optional[str]
-    disabled: Optional[bool]
-
-
-class GetUserRequest(BaseModel):
-    username: Optional[str]
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "user": {
+                    "username": "new_user",
+                    "full_name": "New User",
+                    "email": "new.user@example.com",
+                    "disabled": False,
+                    "hashed_password": "hashed_password_example"
+                }
+            }
+        }
+    def __init__(self, **data):
+        super().__init__(**data)
+        self.model_fields["user"].field_info.description = "The user data for creation."

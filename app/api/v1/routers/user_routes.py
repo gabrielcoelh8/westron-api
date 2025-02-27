@@ -8,8 +8,8 @@ from app.schemas.database_response import InsertResponse
 from app.models.user import User
 from app.api.v1.modules.auth import get_current_active_user, hash_password
 
-router = APIRouter()
 
+router = APIRouter(tags=["User"])
 
 user_repository = UserRepository()
 
