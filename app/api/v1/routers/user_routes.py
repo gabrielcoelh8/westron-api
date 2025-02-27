@@ -16,7 +16,14 @@ user_repository = UserRepository()
 
 @router.post(
     path='/user/create',
-    response_model=Optional[InsertResponse]
+    summary="Create a new user",
+    description="Creates a new user account.",
+    response_model=Optional[InsertResponse],
+    responses={
+        200: {"description": "User created successfully", "content": {"application/json": {"example": {"id": 1}}}},
+        400: {"description": "Bad Request", "content": {"application/json": {"example": {"detail": "Username already exists"}}}},
+        500: {"description": "Internal server error", "content": {"application/json": {"example": {"detail": "Internal server error"}}}}
+    },
 )
 async def create(request: CreateRequest):
     data = request.user.model_dump()
@@ -25,7 +32,15 @@ async def create(request: CreateRequest):
 
 
 @router.get(
-    path='/user/read_me'
+    path='/user/read_me',
+    summary="Get current user",
+    description="Retrieves the details of the currently authenticated user.",
+    response_model=User,
+    responses={
+        200: {"description": "Current user details", "content": {"application/json": {"example": {"username": "john_doe", "full_name": "John Doe", "email": "john.doe@example.com", "disabled": False}}}},
+        401: {"description": "Unauthorized", "content": {"application/json": {"example": {"detail": "Not authenticated"}}}}
+    },
+    dependencies=[Depends(get_current_active_user)],
 )
 async def read_users_me(current_user: User = Depends(get_current_active_user)):
     return current_user
