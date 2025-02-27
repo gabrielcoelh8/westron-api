@@ -11,3 +11,12 @@ class ToPositiveResponseFormat(BaseModel):
     
 class OrthographyCheckResponseFormat(BaseModel):
     text: str
+    
+# TODO: "errors": [
+# {
+# "word": "wrong_word",
+# "suggestions": [
+# "correct_word"
+# ]
+# }
+# ]
