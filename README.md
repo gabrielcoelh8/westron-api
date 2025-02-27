@@ -1,10 +1,8 @@
 ## About
 Enabling the use of various modern LLMs (ChatGPT, Gemini), the API functions as a small natural language processing model, with its main features:
-* Translation of texts to various languages:
-    * `"portuguese", "english", "spanish", "french"`
+* Translation of texts to various languages
 * Detection of negative sentiments and making texts more positive
-* Grammar and spelling correction in various languages:
-    * `"portuguese", "english", "spanish", "french"`
+* Grammar and spelling correction in various languages
 
 > The project architecture allows future addition of new models, or even the use of fine-tuned or proprietary models.
 
@@ -12,6 +10,13 @@ Enabling the use of various modern LLMs (ChatGPT, Gemini), the API functions as 
 
 ![Python](https://img.shields.io/badge/Python-3.12-blue)
 ![fastapi](https://img.shields.io/badge/fastapi-0.115.6-green)
+
+## Supported Languages - translation and orthography check endpoints:
+* "portuguese"
+* "english"
+* "spanish"
+* "french"`
+
 ## Configuration and Enviroment
 Requirements:
 * Linux command terminal or [WSL](https://learn.microsoft.com/pt-br/windows/wsl/install)
@@ -67,10 +72,3 @@ Create a *.env.dev* file containing the variables listed in the configuration se
 2. Open the project root in [Visual Studio Code](https://code.visualstudio.com/)
 3. Install the `Dev Container` extension
 4. Press `CTRL` + `SHIFT` + `P` and search for the option `Dev Containers: Open Folder in Container...`
-
-
-## Supported Languages - translation and orthography check endpoints:
-* "portuguese"
-* "english"
-* "spanish"
-* "french"`
